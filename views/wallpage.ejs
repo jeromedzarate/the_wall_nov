@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wall</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/wall.css">    
+    <script src="../assets/js/wall.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Welcome, <%= DATA.user_data.first_name %>! 
+                <form action="/logout" id="logout_form" data-is_processing="0" method="post">
+                    <input type="hidden" name="user_id" value="<%= DATA.user_data.user_id %>">
+                    <button type="submit">Logout</button>
+                </form>
+            </h2>
+            <form action="/create_message" id="create_message_form" data-is_processing="0" method="post">
+                <p>Post a message</p>
+                <textarea name="message" id="message_field"></textarea>
+                <button type="submit">post a message</button>
+            </form>
+        </div>
+
+        <div class="messages_container">
+            <% DATA.posts.forEach(function(message){ %>
+                <div class="message_<%= message.id %>" data-post_type="messages" data-post_id="<%= message.id %>">
+                    <p><%= message.name %> - <%= message.posted_date %></p>
+                    <p><%= message.content %>
+                        <% if(parseInt(DATA.user_data.user_id) === parseInt(message.user_id)) { %>
+                            <button class="delete_post_btn">X</button>
+                        <% } %>
+                    </p>
+
+                    <div class="comments_container">
+                        <% message.comments && JSON.parse(message.comments).forEach(function(comment){ %>
+                            <div class="comment_<%= comment.id %>" data-post_type="comments" data-post_id="<%= comment.id %>">
+                                <p><%= comment.name %> - <%= comment.posted_date %></p>
+                                <p><%= comment.content %>
+                                    <% if(parseInt(DATA.user_data.user_id) === parseInt(comment.user_id)) { %>
+                                        <button class="delete_post_btn">X</button>
+                                    <% } %>
+                                </p>
+                            </div>
+                        <% }) %>
+                    </div>
+                    <form action="/create_comment" class="create_comment_form" data-is_processing="0" method="post">
+                        <input type="hidden" name="message_id" value="<%= message.id %>">
+                        <textarea name="comment" id="comment_field"></textarea>
+                        <button type="submit">create comment</button>
+                    </form>
+
+                </div>
+            <% }) %>
+        </div>
+
+        <form action="/delete_post" id="delete_post_form" data-is_processing="0" method="post">
+            <input type="hidden" name="id" id="post_id">
+            <input type="hidden" name="post_type" id="post_type">
+        </form>
+    </div>
+</body>
+</html>

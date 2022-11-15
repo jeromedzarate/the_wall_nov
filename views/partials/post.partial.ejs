@@ -1,0 +1,15 @@
+<div class="<%= posts.post_type %>_<%= posts.id %>" data-post_type="<%= posts.post_type %>s" data-post_id="<%= posts.id %>">
+    <p><%= posts.name %> - <%= posts.posted_date %></p>
+    <p><%= posts.content %><button class="delete_post_btn">X</button></p>
+
+    <% if(posts.post_type === "message"){ %>
+        <div class="comments_container">
+
+        </div>
+        <form action="/create_comment" class="create_comment_form" data-is_processing="0" method="post">
+            <input type="hidden" name="message_id" value="<%= posts.id %>">
+            <textarea name="comment" id="comment_field"></textarea>
+            <button type="submit">create comment</button>
+        </form>
+    <% } %>
+</div>
